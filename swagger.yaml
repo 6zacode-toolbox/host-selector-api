@@ -1,0 +1,103 @@
+openapi: 3.0.3
+info:
+  title: Host Selector API
+  description: An API used to select which host to be used to run a given workload
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more
+  url: https://github.com/6zacode-toolbox/host-selector-api
+servers:
+- url: "http://192.168.2.241:7070/{version}"
+  description: Sample Server
+  variables:
+    version:
+      default: v1.0.0
+      enum:
+      - v1.0.0
+paths:
+  /nextHost:
+    post:
+      tags:
+        - HostFilter
+      summary: Gets a host that fits the filter parameters
+      description: ''
+      operationId: calculateNextHost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HostFilter'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Host'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Host'          
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+        '500':
+          description: Error calculating next host
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+          
+components:
+  schemas:
+    HostFilter:
+      type: object
+      properties:
+        hasSSD:
+          type: string
+          enum: [yes, no]
+          example: no
+          description: if the is required to have to have SSD attached for usage.
+        platform:          
+          type: string
+          enum: [pi, intel, intelWithGpu]
+          example: pi
+          description: the type of host expected to be used for this workload
+        strategy:
+          type: string
+          enum: [cooler,bigger]
+          example: cooler
+          description: |
+            Which sort mechanism is required:
+            - "cooler", the one wich lower temperature.
+            - "bigger", the one wich biggest collection of resources. 
+      xml:
+        name: user
+    Host:
+      type: object
+      properties:
+        name:
+          type: string
+          example: myhost
+          description: the name of host returned
+
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
+  
