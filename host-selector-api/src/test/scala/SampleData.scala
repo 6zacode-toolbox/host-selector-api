@@ -1,3 +1,10 @@
+object SampleConversions {
+  val samplePrometheusDataObject = PrometheusData("success", new Data("resultType", List(new Result(
+    Metric("name", "instance", "job"),
+    List[Values](new Values(1677538652.072, "10.1"))))))
+  val sampleSimplePrometheusData = """{"data":{"result":[{"metric":{"__name__":"name","instance":"instance","job":"job"},"values":[[1677538652.072,"10.1"]]}],"resultType":"resultType"},"status":"success"}"""
+}
+
 object SamplePrometheusData {
   val metricSample ="""{"__name__":"CPU_Temperature","instance":"10.10.10.100:9100","job":"node-exporter-pi-100"}"""
 

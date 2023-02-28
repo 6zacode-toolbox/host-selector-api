@@ -8,7 +8,9 @@ case class Result (        metric: Metric,                   values: Seq[Values]
 case class PrometheusData ( status: String, data: Data )
 
 case class Values (epoch: Double,value: String)
+case class PrometheusReadings ( cpu: PrometheusData, container: PrometheusData )
 
+case class SummaryReading (job: String, value: Double)
 import spray.json._
 object PrometheusDataProtocol extends DefaultJsonProtocol {
 

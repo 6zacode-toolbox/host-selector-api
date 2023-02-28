@@ -8,29 +8,42 @@ class TestDockerHostSelector extends AnyWordSpec {
 
   import PrometheusDataProtocol._
   import spray.json._
-  "A dockerHostSelector" should {
-    "return a result" in {
-      //assert(dockerHostSelector.HostSelection(new DockerCompose("teste", "test") )== "myhosts")
-    assert(true)
+
+
+  "A Prometheus Data String conversion " should {
+    "return a expected object" in {
+      val sampleData = SampleConversions.sampleSimplePrometheusData
+      val sampleConverted = sampleData.parseJson.convertTo[PrometheusData]
+      assert(SampleConversions.samplePrometheusDataObject == sampleConverted)
+
     }
   }
 
-  "A payload Read" should {
-    "return a result" in {
+  "A Metric String conversion " should {
+    "return a expected object" in {
+      val sampleData = SamplePrometheusData.metricSample
+      val sampleConverted = sampleData.parseJson.convertTo[Metric]
+      assert(sampleConverted.name == "CPU_Temperature")
+      assert(sampleConverted.instance == "10.10.10.100:9100")
+      assert(sampleConverted.job == "node-exporter-pi-100")
 
-      val metricJSONObject =  SamplePrometheusData.metricSample.parseJson.convertTo[Metric]
-      println(metricJSONObject)
-      println(metricJSONObject.getClass)
-      val sampleData = PrometheusData("success", new Data("resultType" ,List(new Result(
-        Metric("name","instance", "job"),
-        List[Values]( new Values(0, "10")) ))))
-      println(sampleData.toJson.toString())
+    }
+  }
+  "A Prometheus Payload " should {
+    "be converted without issues" in {
+
       val prometheusObject = SamplePrometheusData.prometheusTempData.parseJson.convertTo[PrometheusData]
-      println(prometheusObject)
-      println(prometheusObject)
-      println(prometheusObject.getClass)
-      //assert(dockerHostSelector.HostSelection(new DockerCompose("teste", "test")) == "myhosts")
+      assert(prometheusObject.getClass.getName == "PrometheusData")
+      assert(prometheusObject.data.result.length == 2)
+      assert(prometheusObject.data.result(1).values.length == 40)
 
+    }
+  }
+  "A dockerHostSelector" should {
+    "return a result" in {
+      val readings = new PrometheusReadings(cpu = SamplePrometheusData.prometheusTempData.parseJson.convertTo[PrometheusData], container = SamplePrometheusData.prometheusTempData.parseJson.convertTo[PrometheusData])
+      assert(dockerHostSelector.HostSelection(new DockerCompose("teste", "test"), readings) == "node-exporter-pi-101")
+      assert(true)
     }
   }
 }
