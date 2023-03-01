@@ -12,6 +12,8 @@ case class PrometheusReadings ( cpu: PrometheusData, container: PrometheusData )
 
 case class SummaryReading (job: String, value: Double)
 import spray.json._
+
+case class JobMapping (kubernetesHost: String, prometheusJob: String)
 object PrometheusDataProtocol extends DefaultJsonProtocol {
 
 
@@ -39,6 +41,7 @@ object PrometheusDataProtocol extends DefaultJsonProtocol {
     def write(obj: Values) = JsArray( JsNumber(obj.epoch),JsString(obj.value))
 
   }
+  implicit val formatterJobMapping = jsonFormat(JobMapping, "kubernetesHost", "prometheusJob")
   implicit val formatterResult = jsonFormat(Result, "metric", "values")
   implicit val formatterData = jsonFormat(Data, "resultType", "result")
   implicit val formatterPrometheusData = jsonFormat(PrometheusData, "status", "data")

@@ -8,6 +8,11 @@ object SampleConversions {
 object SamplePrometheusData {
   val metricSample ="""{"__name__":"CPU_Temperature","instance":"10.10.10.100:9100","job":"node-exporter-pi-100"}"""
 
+  val jobMappings = List(
+    JobMapping("host1","node-exporter-pi-100"),
+    JobMapping("host2","node-exporter-pi-101")
+  )
+
   val singleReadingPrometheus =
     """
       |{"metric":

@@ -42,7 +42,7 @@ class TestDockerHostSelector extends AnyWordSpec {
   "A dockerHostSelector" should {
     "return a result" in {
       val readings = new PrometheusReadings(cpu = SamplePrometheusData.prometheusTempData.parseJson.convertTo[PrometheusData], container = SamplePrometheusData.prometheusTempData.parseJson.convertTo[PrometheusData])
-      assert(dockerHostSelector.HostSelection(new DockerCompose("teste", "test"), readings) == "node-exporter-pi-101")
+      assert(dockerHostSelector.HostSelection(new DockerCompose("teste", "test"),readings, SamplePrometheusData.jobMappings) == "host2")
       assert(true)
     }
   }
