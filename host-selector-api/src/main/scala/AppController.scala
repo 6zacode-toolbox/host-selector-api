@@ -15,7 +15,7 @@ class AppController {
   implicit val dcFormat: RootJsonFormat[DockerCompose] = jsonFormat2(DockerCompose.apply)
   def process(input: DockerCompose): ToResponseMarshallable = {
     val selector = new DockerHostSelector()
-    val resultCPU = selector.readCPUFromPrometheus()
+    val resultCPU = selector.readFromPrometheus("CPU_Temperature%5B10m%5D")
     val mapping = selector.readMappingTable()
     selector.HostSelection(input, new PrometheusReadings(resultCPU, resultCPU),mapping)
   }
