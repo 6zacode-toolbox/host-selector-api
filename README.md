@@ -13,6 +13,8 @@ An API to select the cooler host to handle a giving payload/job.
 docker run -it -w /app \
         --name scala-sandbox \
         -e PROMETHEUS_HOST="127.0.0.1:9090" \
+        -e SELECTOR_HOST_MAPPING="/source/dockerhostmapping.json" \
+        -v $HOME/_DEV/dockerhostapi:/source \
         -v $PWD:/app -p 0.0.0.0:8080:8080 \
         --rm sbtscala/scala-sbt:eclipse-temurin-jammy-8u352-b08_1.8.2_2.12.17 /bin/bash
 

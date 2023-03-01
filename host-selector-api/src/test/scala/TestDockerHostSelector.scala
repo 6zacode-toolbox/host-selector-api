@@ -46,4 +46,15 @@ class TestDockerHostSelector extends AnyWordSpec {
       assert(true)
     }
   }
+/*
+  "A AppController" should {
+    "return a result" in {
+      val appController = new AppController
+      val actionRestult = appController.process(new DockerCompose("teste","teste"))
+      assert(actionRestult == "host2")
+      assert(true)
+    }
+  }
+
+ */
 }

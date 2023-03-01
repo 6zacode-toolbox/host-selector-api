@@ -16,6 +16,7 @@ class AppController {
   def process(input: DockerCompose): ToResponseMarshallable = {
     val selector = new DockerHostSelector()
     val resultCPU = selector.readCPUFromPrometheus()
-    selector.HostSelection(input, new PrometheusReadings(resultCPU, resultCPU),List[JobMapping]())
+    val mapping = selector.readMappingTable()
+    selector.HostSelection(input, new PrometheusReadings(resultCPU, resultCPU),mapping)
   }
 }

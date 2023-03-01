@@ -20,8 +20,9 @@ class DockerHostSelector {
     } )
     val cpuSorted = cpuMeasures.toSeq.sortBy(_.value)
     val jobMap = jobMappings.map( mapping => mapping.prometheusJob -> mapping.kubernetesHost).toMap
-    if (cpuSorted.length > 0) {
-      jobMap(cpuSorted(0).job)
+    val onlyKnownHosts = cpuSorted.collect { case host if jobMap.contains(host.job) => SummaryReading(host.job, host.value) }
+    if (onlyKnownHosts.length > 0) {
+      jobMap(onlyKnownHosts(0).job)
     } else {
       ""
     }
@@ -35,7 +36,7 @@ class DockerHostSelector {
       uri = s"http://$prometheusHost/api/v1/query?query=CPU_Temperature%5B10m%5D"
     )
     val responseFuture = Http().singleRequest(request)
-    val timeout = 300.millis
+    val timeout = 60000.millis
     val responseAsString = Await.result(
       responseFuture.flatMap(resp => Unmarshal(resp.entity).to[String]),
       timeout
@@ -46,7 +47,7 @@ class DockerHostSelector {
   }
 
   def readMappingTable() = {
-
     val contents = io.Source.fromFile(mappingHost).mkString
+    contents.parseJson.convertTo[List[JobMapping]]
   }
 }
